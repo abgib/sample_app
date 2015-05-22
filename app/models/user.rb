@@ -41,10 +41,9 @@ validates :password, length: { minimum: 6 }, allow_blank: true
     BCrypt::Password.new(digest).is_password?(token)
   end
 
-    # Activates an account.
+  # Activates an account.
   def activate
-    update_attribute(:activated,    true)
-    update_attribute(:activated_at, Time.zone.now)
+    update_columns(activated: true, activated_at: Time.zone.now)
   end
 
   # Sends activation email.
@@ -52,11 +51,11 @@ validates :password, length: { minimum: 6 }, allow_blank: true
     UserMailer.account_activation(self).deliver_now
   end
 
-    # Sets the password reset attributes.
+  # Sets the password reset attributes.
   def create_reset_digest
     self.reset_token = User.new_token
-    update_attribute(:reset_digest,  User.digest(reset_token))
-    update_attribute(:reset_sent_at, Time.zone.now)
+    update_columns(reset_digest:  User.digest(reset_token),
+                   reset_sent_at: Time.zone.now)
   end
 
   # Sends password reset email.
